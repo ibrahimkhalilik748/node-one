@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 
 //get a todo by ID
 router.get('/:id', async (req, res) => {
-    await Todo.find({ _id: req.params.id }, (err, data) => {
+    await Todo.find({ _id: req.params.id }).select({ __v: 0 }).exec((err, data) => {
         if (err) {
             res.status(500).json({
                 error: "this is Error",
@@ -57,29 +57,22 @@ router.post('/', async (req, res) => {
 
 //put todo
 router.put('/:id', async (req, res) => {
-    await Todo.findByIdAndUpdate({ _id: req.params.id},{
-        $set: {
-            name: "",
-            email: "",
-            password: ""
+    try {
+        const todo = await Todo.findById(req.params.id);
+        if (todo) {
+            todo.name = req.body.name;
+            todo.email = req.body.email;
+            todo.password = req.body.password;
+            await todo.save();
+            res.status(200).send({
+                message: 'success'
+            });
         }
-    },
-    {
-        new: true
-    },
-    (err, data) => {
-        if (err) {
-            res.status(500).json({
-                error: "this is Error",
-            });
-        } else {
-            res.status(200).json({
-                data,
-
-                message: "Get Successful",
-            });
-        }console.log(data)
-    })
+    } catch (err) {
+        res.status(404).send({
+            message: err.message,
+        });
+    }
 })
 
 //Delete todo

@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const todoHandler = require('./src/router/todoHandler')
 
-const port = 5000;
+require('dotenv').config()
+
+const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
@@ -11,7 +13,7 @@ app.use(cors());
 
 
 mongoose
-    .connect(`mongodb+srv://tasting123:tasting456@cluster0.em86h.mongodb.net/tasting?retryWrites=true&w=majority`, { 
+    .connect(`mongodb+srv://${process.env.DB_username}:${process.env.DB_password}@cluster0.em86h.mongodb.net/${process.env.DB_name}?retryWrites=true&w=majority`, { 
         useNewUrlParser: true, 
         useUnifiedTopology: true
     })
