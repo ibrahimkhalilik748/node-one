@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
             res.status(500).json({
                 error: "this is Error",
             });
-        } else {
+        } else { 
             res.status(200).json({
                 data: data,
                 message: "Get Successful",
